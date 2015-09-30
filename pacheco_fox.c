@@ -76,20 +76,21 @@ int main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     
     Setup_grid(&grid);
-    n = strtod(argv[1], NULL);
-    
+   // n = strtod(argv[1], NULL);
+    n = 16;
+
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     n_bar = n/grid.q;
     
     local_A = Local_matrix_allocate(n_bar);
     Order(local_A) = n_bar;
     Read_matrix("Enter A", local_A, &grid, n);
-    Print_matrix("We read A =", local_A, &grid, n);
+    //Print_matrix("We read A =", local_A, &grid, n);
     
     local_B = Local_matrix_allocate(n_bar);
     Order(local_B) = n_bar;
     Read_matrix("Enter B", local_B, &grid, n);
-    Print_matrix("We read B =", local_B, &grid, n);
+    //Print_matrix("We read B =", local_B, &grid, n);
     
     Build_matrix_type(local_A);
     temp_mat = Local_matrix_allocate(n_bar);
@@ -102,12 +103,11 @@ int main(int argc, char* argv[]) {
         finish = MPI_Wtime();
         loc_elapsed = finish-start;
         MPI_Reduce(&loc_elapsed, &elapsed, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-        
+        }
         if (my_rank == 0)
             printf("Elapsed time = %e\n", elapsed);
-    }
     
-    Print_matrix("The product is", local_C, &grid, n);
+    //Print_matrix("The product is", local_C, &grid, n);
     
     Free_local_matrix(&local_A);
     Free_local_matrix(&local_B);
